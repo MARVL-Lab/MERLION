@@ -131,13 +131,12 @@ pickle_file = ''
 ##
 ### Set the benchmarks set
 ##
-# benchmarks_set = human_jun2023
 benchmarks_set = []
 
 def eval_many_to_one(frames, threshold, fps):
     benchmarks = benchmarks_set
 
-    spot_on = threshold * fps # marcelprasetyo dec 5 2023 changed 0.6 to set threshold value
+    spot_on = threshold * fps
 
     current_score_matrix = [] # there's 6, one for each fi
     for fi in frames: # evaluate each frame in the computer generated summary
@@ -151,13 +150,13 @@ def eval_many_to_one(frames, threshold, fps):
                 if delta < spot_on: 
                     if current_match < 1:
                         current_match = 1
-                else:                           # rev 2, exponential decay
-                    temp = math.exp(-1* (delta - spot_on)/fps)  # rev 2, exponential decay
+                else:                           
+                    temp = math.exp(-1* (delta - spot_on)/fps) 
                     if current_match < temp:
                         current_match = temp
             # after one benchmark.
             if current_match > 0:
-                score += current_match # rev1 . just add. add the best score across one benchmark
+                score += current_match
         # after all benchmarks have been compared
         # normalize score to average of all benchmarks
         score /= len(benchmarks)
@@ -172,7 +171,6 @@ def eval_many_to_one(frames, threshold, fps):
 ## Preferred this one
 def eval_one_to_many(frames, threshold, fps):
     benchmarks = benchmarks_set
-    # fps = fps
 
     spot_on = threshold * fps
 
@@ -184,8 +182,6 @@ def eval_one_to_many(frames, threshold, fps):
         benchmark_total_score = 0
 
         for fb in benchmark: # evaluate each frame in human benchmark
-            # time_score_list = []
-            # time_score_ind = []
             current_score = 0
             for ind, fi in enumerate(frames): # evaluate each frame in the computer generated summary
                 fi = int(fi)
@@ -205,89 +201,6 @@ def eval_one_to_many(frames, threshold, fps):
         current_score_matrix.append(benchmark_total_score/len(benchmark))
     
     total_score = statistics.mean(current_score_matrix)
-    return total_score
-
-
-def eval_one_to_one_rev1(frames):
-    benchmarks = benchmarks_set
-    fps = 30
-
-    spot_on = threshold * fps
-
-    current_score_matrix = [] # there's 6, one for each fi
-    found_dict = 0   # count each time it is FOUND in each human summary (at most once in each human summary)
-    ## we should implement a solution for optimization of bipartite graph.
-    for benchmark in benchmarks: # loop through each human generated summary
-        bench_dict = []
-        for ind, fi in enumerate(frames): # evaluate each frame in the computer generated summary
-            fi = int(fi)
-            score = 0
-            current_match = 0
-            # current_ind = 
-            for indB, fb in enumerate(benchmark): # loop through each frame of the human summary 
-                delta = abs(fi-fb)
-                if delta < spot_on: 
-                    if current_match < 1:
-                        current_match = 1
-                else:                           # rev 2, exponential decay
-                    temp = math.exp(-1* (delta - spot_on)/fps)  # rev 2, exponential decay
-                    if current_match < temp:
-                        current_match = temp
-
-        # after one benchmark.
-        if current_match > 0:
-            found_times = found_times + 1
-            score += current_match # rev1 . just add
-    # after all benchmarks have been compared
-    current_score_matrix.append(score)
-
-    # print(current_score_matrix)
-    # current_score_matrix = [math.log10(x) for x in current_score_matrix]
-    total_score = 0
-    for i in range(len(current_score_matrix)):
-        total_score += current_score_matrix[i]
-    return total_score
-
-def eval_one_to_one_old(frames):
-    benchmarks = benchmarks_set
-    fps = 30
-
-    spot_on = 0.6 * fps
-
-    current_score_matrix = [] # there's 6, one for each fi
-    for ind, fi in enumerate(frames): # evaluate each frame in the computer generated summary
-        fi = int(fi)
-        score = 0
-        found_times = 0   # count each time it is FOUND in each human summary (at most once in each human summary)
-        for benchmark in benchmarks: # loop through each human generated summary
-            current_match = 0
-            fb = benchmark[ind] # one to one matching
-            delta = abs(fi-fb)
-            if delta < spot_on: 
-                if current_match < 1:
-                    current_match = 1
-            else:                           # rev 2, exponential decay
-                temp = math.exp(-1* (delta - spot_on)/fps)  # rev 2, exponential decay
-                if current_match < temp:
-                    current_match = temp
-            # after one benchmark.
-            if current_match > 0:
-                found_times = found_times + 1
-                score += current_match # rev1 . just add
-        # after all benchmarks have been compared
-        current_score_matrix.append(score)
-        # end of one frame
-    # after all frames for one com generated summary are done
-    # print(current_score_matrix)
-    # current_score_matrix = [math.log10(x) for x in current_score_matrix]
-    thres = -4
-    total_score = 0
-    for i in range(len(current_score_matrix) - 1, -1, -1):
-        if current_score_matrix[i] < thres:
-            # current_score_matrix[i] = thres
-            print("negative score")
-            del current_score_matrix[i]
-        total_score += current_score_matrix[i]
     return total_score
 
 def read_video(vid_files, idx):
@@ -368,11 +281,7 @@ def eval_semantic(frames, labels, weight=0.5, threshold=2.0, fps=30):
                 if ind in skip_ind:
                     continue
                 automated_label = labels[fi]
-                # print(automated_label[0])
                 for l in automated_label:
-                    #     print(l)
-                    #     print(human_label)
-                    #     print("L: ", l, " H: ", human_label, " Sc: ", score)
                     if l in human_label and l != '' and l!= '[]' and l!= '['']': ## exclude empty
                         score = time_score_linear(fi, fb, fps, threshold = threshold)
                         score = weight*1 + (1-weight)*score
@@ -398,8 +307,7 @@ def eval_semantic_not_remove(frames, labels, weight=0.5, threshold=2.0, fps=30):
     current_score_matrix = [] # there's 3, one for each human summary
     for benchmark in benchmarks: # loop through each human generated summary
         current_score = 0
-        # skip_ind = []
-        for curr_ind in range(6): # evaluate each frame in the computer generated summary # comment dec212023- this is each frame in the current human benchmark summary
+        for curr_ind in range(6): #this is each frame in the current human benchmark summary
             fb = benchmark[curr_ind]
             human_label = labels[fb]
             time_score_list = []
@@ -408,7 +316,6 @@ def eval_semantic_not_remove(frames, labels, weight=0.5, threshold=2.0, fps=30):
                 fi = int(fi)
                 automated_label = labels[fi]
                 for l in automated_label:
-                    #     print("No detected, but L: ", l, " H: ", human_label, " Sc: ", score)
                     if l in human_label and l != '' and l!= '[]' and l!= '['']': ## exclude empty
                         score = time_score_linear(fi, fb, fps, threshold = threshold)
                         score = weight*1 + (1-weight)*score
