@@ -22,23 +22,23 @@ git clone https://github.com/MARVL-Lab/MERLION
 
 __Install DM_underwater for Visual enhancement module:__
 
-Clone the repository within the MERLION folder
+1. Clone the repository within the MERLION folder
 
 ```sh
 git clone https://github.com/piggy2009/DM_underwater.git
 cd MERLION
 ```
 
-Install the repository
-- Install necessary Python packages from requirement.txt
-- Download a [model checkpoint](https://drive.google.com/file/d/1As3Pd8W6XmQBU__83iYtBT5vssoZHSqn/view?usp=sharing).
-- To enhance any folder of images, add the path to the folder into the config file (check instructions on the repository)
-- Visual enhancement can be run via the script `infer.py`
+
+2. Install necessary Python packages from requirement.txt
+3. Download a [model checkpoint](https://drive.google.com/file/d/1As3Pd8W6XmQBU__83iYtBT5vssoZHSqn/view?usp=sharing).
+4. To enhance any folder of images, add the path to the folder into the config file (check instructions on the repository)
+5. Visual enhancement can be run via the script `infer.py`
 
 
 __Install CLIP:__
 
-Conda installation:
+1. Conda installation:
 
 ```sh
 conda activate {your_conda_environment}
@@ -47,9 +47,8 @@ pip install ftfy regex tqdm
 pip install git+https://github.com/openai/CLIP.git
 ```
 
-Python venv installation is similar to the above.
-
-Your first use of the CLIP model in this project will require an internet connection as CLIP needs to download a checkpoint. You may modify the chosen model under `model, preprocess = clip.load("ViT-B/32", device=device)` in `merlion.py`. Apart from this, you will not require an internet connection when running MERLION.
+- Python venv installation is similar to the above.
+- Your first use of the CLIP model in this project will require an internet connection as CLIP needs to download a checkpoint. You may modify the chosen model under `model, preprocess = clip.load("ViT-B/32", device=device)` in `merlion.py`. Apart from this, you will not require an internet connection when running MERLION.
 
 __Install missing packages__
 
@@ -64,7 +63,7 @@ pip install json
 Prepare the videos you would want to use as input as images (we converted to 256x456 resolution)
 
 ```sh
-ffmpeg -i "/path/to/output/video.mp4" -vf "scale=256:456" -pix_fmt yuv420p -c:v libx264 "/path/to/frames/%5d.png"
+ffmpeg -i "/path/to/input/video.mp4" -vf "scale=256:456" -pix_fmt yuv420p -c:v libx264 "/path/to/output/frames/%5d.png"
 ```
 
 Adjust the parameters as needed ("-pix_fmt yuv420p -c:v libx264" may not be needed)
@@ -88,7 +87,7 @@ __High visibility dataset:__
 Bonaire - Kralendijk - GoPro Hero 4 Silver - Best Snorkeling and Scuba Diving. (February 15, 2015). louis edwar rodriguez benavides. URL: [https://www.youtube.com/watch?v=SiNj0Av9Zqk](https://www.youtube.com/watch?v=SiNj0Av9Zqk)
 
 
-For ready-made exemplars of the above data (unenhanced and enhanced) you may download from [OneDrive](https://sutdapac-my.sharepoint.com/:f:/g/personal/malika_meghjani_sutd_edu_sg/EuXGZj9K0MdIv69IxOwj87IBhwG_LcRG2SbPgjSL4_iACg?e=ZoCmg1): 
+For ready-made exemplars of the above data (unenhanced and enhanced) you may download from [OneDrive](https://sutdapac-my.sharepoint.com/:f:/g/personal/malika_meghjani_sutd_edu_sg/Eq4yc_kdljJIjX7oNwNTa6YBTWwGUKnvREn6Dq6FsmKDHA?e=s0f3u6): 
 
 Use the password provided below (without spaces)
 ```
@@ -99,7 +98,7 @@ marvl merlion 2025
 
 ### MERLION
 
-For plain MERLION without visual enhancement run the following command in your conda / python environment:
+For vanilla MERLION without visual enhancement run the following command in your conda / python environment:
 
 ```sh
 python merlion.py --video_frame_path="/path/to/frames" --summary_size=6 --save_summary_to="/path/to/save" --threshold=0.5
@@ -109,13 +108,15 @@ python merlion.py --video_frame_path="/path/to/frames" --summary_size=6 --save_s
 
 ### MERLION-E
 
+MERLION-E performs presampling to select semantically aligned frames for visual data enhancement. These visually enhanced frames are then processed to obtain semantically aligned visual summaries.
+
 Run the below command for presampling and save the presampled frames (first phase)
 
 ```sh
 python presampling.py --video_frame_path="/path/to/frames" --save_selected_to="/path/to/save" --threshold=0.5
 ```
 
-Please note that the special parameter name is "save_selected_to" and not "save_summary_to".
+Please note that the special parameter name for `presampling.py` is "save_selected_to" and not "save_summary_to" (which is used for `merlion.py`).
 
 Presampled frames will be saved under the folder specified by the argument "save_selected_to". After presampling, use the DM_underwater visual enhancement model to enhance the presampled frames.
 
@@ -125,15 +126,15 @@ Once you are done with enhancement, run this command to obtain the final summary
 python merlion.py --video_frame_path="/path/to/enhanced/presampled/frames" --summary_size=6 --save_summary_to="/path/to/save" --threshold=0.7
 ```
 
-Following the paper, the threshold for final sampling can be higher such as 0.7.
+Following the MERLION paper (Section IV, Dataset and Hyper-parameters), the threshold for final sampling can be higher such as 0.7.
 
 ## Evaluation
 
-To evaluate the results obtained, run the file `eval/evaluate_config_comparison.py` (you may rename it thus). For examples of running it, see `eval/evaluate_config_comparison_sep2024_examples.sh` . Follow the steps below to evaluate properly.
+To evaluate the results obtained, run the file `eval/evaluate_config_comparison.py` (you can rename `evaluate_config_comparison_sep2024_rev2.py` to `evaluate_config_comparison.py`). For examples of running it, see `eval/evaluate_config_comparison_sep2024_examples.sh` . Follow the steps below to evaluate properly.
 
 ### Human benchmark
 
-You will need a human benchmark for each dataset, that is, a list of lists containing the frame indices of frames chosen by human evaluators as benchmark. We have provided and coded the human benchmark for the aforementioned example datasets in the evaluation script.
+You will need a human benchmark for each dataset, that is, a list of lists containing the frame indices of frames chosen by human evaluators as benchmark. We have provided in the script the frame numbers obtained from the user studies as the human benchmark for the aforementioned example datasets.
 
 ### Numerical frame index format summary files
 
@@ -145,7 +146,7 @@ To supply the input summary files to the evaluation script, we will need to prep
 
 ### Labels
 
-You will also need semantic labels if you are using the semantic evaluation method. Check the given labels under eval/labels/ for the format. It is a dictionary which contains a list of semantic labels of relevant objects (e.g. fish species) as a value for each frame index (the key). All possible video frame indices need to have labels, and there are ways to generate this dictionary with optimal effort.
+You will also need semantic labels if you are using the semantic evaluation method. Please refer to our previous work [1], where we proposed Semantic Representative Uniqueness Metric (SRUM). Check the given labels under eval/labels/ for the format. It is a dictionary which contains a list of semantic labels of relevant objects (e.g. fish species) as a value for each frame index (the key). All video frames need to have labels in the above dictionary format. An efficient way of manually labelling all video frames is by labelling a range of frames rather than individual frames and then converting them into the above dictionary format.
 
 We have provided the labels for the example datasets.
 
@@ -174,7 +175,7 @@ If you use MERLION, please consider getting in touch and letting us know. It wil
 
 
 ```bibtex
-@INPROCEEDINGS{thenganeprasetyo2025merlionmarineexplorationlanguage,
+@INPROCEEDINGS{merlion2025,
       author={Thengane, Shrutika Vishal and Prasetyo, Marcel Bartholomeus and Tan, Yu Xiang and Meghjani, Malika},
       booktitle={2025 IEEE International Conference on Robotics and Automation (ICRA)}, 
       title={{MERLION: Marine ExploRation with Language guIded Online iNformative Visual Sampling and Enhancement}}, 
@@ -187,4 +188,10 @@ If you use MERLION, please consider getting in touch and letting us know. It wil
 }
 ```
 
-We are grateful for being able to contribute this repository for the advancement of marine science and the greater good.
+## References
+
+[1] S. V. Thengane, Y. X. Tan, M. B. Prasetyo and M. Meghjani, "Online Informative Sampling Using Semantic Features in Underwater Environments," OCEANS 2024 - Singapore, Singapore, Singapore, 2024, pp. 1-6, doi: 10.1109/OCEANS51537.2024.10682405.
+
+## Acknowledgement
+
+This project is supported by A*STAR under its RIE2020 Advanced Manufacturing and Engineering (AME) Industry Alignment Fund (Grant No. A20H8a0241) and Google South & Southeast Asia Research Awards (2024). We are grateful for their support and being able to contribute this repository for the advancement of marine science and the greater good.
