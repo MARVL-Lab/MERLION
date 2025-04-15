@@ -369,10 +369,10 @@ def get_highest(rost_dict):
 if __name__ == "__main__":
 
     ### Pickle label files
-    # use lean strict to be lean and strict. this prevents the abuse of using small_black_fish and yellow-black striped longfish which is ubiquitous. see the corresponding manual file marcel_sep13_2024-kralendijk-manual-tabulated-v1-5-lean-3cols.xlsx
-    bk_clear_v1_5_pkl_sep1324 = './labels/kralendijk_marcel_sep13_v1_5_lean_strict.pkl'
-    powellscay_v1_pkl_sep1324 = './labels/powellscay_marcel_sep13_v1.pkl'
-    gopro_bonaire_v2_pkl_sep1624 = './labels/gopro-bonaire_marcel_sep16_v2.pkl'
+    # use lean strict to be lean and strict. this prevents the skewness of evaluation score as small_black_fish and yellow-black striped longfish are ubiquitous.
+    bk_clear_v1_5_pkl_sep1324 = './labels/kralendijk_sep13_v1_5_lean_strict.pkl'
+    powellscay_v1_pkl_sep1324 = './labels/powellscay_sep13_v1.pkl'
+    gopro_bonaire_v2_pkl_sep1624 = './labels/gopro-bonaire_sep16_v2.pkl'
     
     pickle_file = None
 
