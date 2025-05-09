@@ -55,7 +55,7 @@ __Install missing packages__
 Run the scripts merlion.py and summarizer.py and see if you still have any missing packages and install them:
 
 ```sh
-pip install json
+pip install <missing_package>
 ```
 
 ## Preparing video datasets
