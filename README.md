@@ -194,4 +194,4 @@ If you use MERLION, please consider getting in touch and letting us know. It wil
 
 ## Acknowledgement
 
-This project is supported by A*STAR under its RIE2020 Advanced Manufacturing and Engineering (AME) Industry Alignment Fund (Grant No. A20H8a0241) and Google South & Southeast Asia Research Awards (2024). We are grateful for their support and being able to contribute this repository for the advancement of marine science and the greater good.
+This project is supported by A*STAR under its RIE2020 Advanced Manufacturing and Engineering (AME) Industry Alignment Fund (Grant No. A20H8a0241), the Ministry of Education, Singapore, under its SUTD Kickstarter Initiative (Proposal number: SKI 2021_05_07) and Google South & Southeast Asia Research Awards (2024). We are grateful for their support and being able to contribute this repository for the advancement of marine science and the greater good.
